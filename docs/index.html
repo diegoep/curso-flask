@@ -1,0 +1,710 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Introdução ao Desenvolvimento Web com Flask</title>
+
+        <link rel="stylesheet" href="reveal.js/dist/reset.css">
+        <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+        <link rel="stylesheet" href="reveal.js/dist/theme/white.css">
+        <link rel="stylesheet" href="css/app.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h1>Introdução ao Desenvolvimento Web com Flask</h1>
+					<p>Baseado em "Flask Web Development" por Miguel Grinberg</p>
+					<p><small>Capítulos 1, 2, 3 e 4</small></p>
+					<br>
+					<img src="img/flask-livro.jpg" alt="Capa do livro Flask Web Development" style="height: 200px;">
+				</section>
+
+				<section>
+					<h2>Por Que Flask?</h2>
+					<ul>
+						<li>É um "microframework".</li>
+						<li>Leve, mas extensível.</li>
+						<li>Permite controle criativo total sobre suas aplicações web.</li>
+						<li>Oferece um núcleo robusto com funcionalidades básicas.</li>
+						<li>A maioria das funcionalidades de alto nível (bancos de dados, formulários, autenticação) são fornecidas por extensões.</li>
+						<li>Flexibilidade na escolha de componentes da aplicação.</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Capítulo 1: Instalação</h2>
+					</section>
+
+					<section>
+						<h3>Conceitos Introdutórios de Programação Web</h3>
+						<h4>Comunicação Cliente-Servidor</h4>
+						<ul>
+							<li>O desenvolvimento web baseia-se na interação entre **clientes** (geralmente navegadores web) e **servidores**.</li>
+							<li>O cliente faz uma **requisição** a um servidor (ex: digita um URL no navegador).</li>
+							<li>O servidor **processa** a requisição e envia uma **resposta** de volta ao cliente.</li>
+							<li>Esta resposta é então interpretada pelo cliente (ex: o navegador renderiza o HTML).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Conceitos Introdutórios de Programação Web</h3>
+						<h4>Protocolo HTTP (Hypertext Transfer Protocol)</h4>
+						<ul>
+							<li>É o protocolo que rege a comunicação entre cliente e servidor na web.</li>
+							<li>Definido por **métodos de requisição** (verbos HTTP) que indicam a ação desejada (GET, POST, PUT, DELETE, etc.).</li>
+							<li>A resposta do servidor inclui um **código de status** (ex: 200 OK, 404 Not Found, 500 Internal Server Error) e o corpo da resposta (ex: HTML, JSON).</li>
+						</ul>
+                        <div style="display: flex; justify-content: center;">
+                            <img src="img/methods.png" alt="Métodos HTTP" style="width: 100%; max-width: 600px;" />
+                        </div>
+                        <div style="background: #e7f3fe; border-left: 6px solid #2196F3; padding: 12px; margin: 16px 0;">
+                            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" target="_blank">
+                                Lista de códigos de status http
+                            </a>
+                        </div>
+					</section>
+
+					<section>
+						<h3>Conceitos Introdutórios de Programação Web</h3>
+						<h4>Servidores Web</h4>
+						<ul>
+							<li>Programas que escutam requisições HTTP e servem respostas.</li>
+							<li>Para Python, o servidor web passa as requisições para a aplicação usando o protocolo **WSGI (Web Server Gateway Interface)**.</li>
+							<li>Flask inclui um servidor de desenvolvimento para testes. Servidores de produção (como Gunicorn, uWSGI) são necessários para aplicações reais.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Requisitos e Compatibilidade</h3>
+						<ul>
+							<li>Python instalado.</li>
+							<li>Exemplos verificados com Python 3.5 e 3.6.</li>
+							<li>Recomendado Python 3.x, pois Python 2.7 não será mais mantido após 2020.</li>
+							<li>Compatível com sistemas Unix (Linux, macOS) e Windows (com alternativas ou WSL).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Ambientes Virtuais</h3>
+						<ul>
+							<li>Cópia isolada do interpretador Python.</li>
+							<li>Instalação privada de pacotes, sem afetar o interpretador global.</li>
+							<li>Previne "bagunça" de pacotes e conflitos de versão.</li>
+							<li>Pode ser criado e gerenciado sem direitos de administrador.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Criando um Ambiente Virtual</h3>
+						<h4>Com Python 3 (<code>venv</code>)</h4>
+						<pre><code class="language-bash">
+# Criar diretório da aplicação (opcional, se não clonou o repositório)
+$ mkdir flasky
+$ cd flasky
+
+# Criar ambiente virtual (convenção: 'venv')
+$ python3 -m venv venv
+						</code></pre>
+						<p><small><code>python3 -m venv</code> executa o pacote <code>venv</code> como um script autônomo.</small></p>
+					</section>
+
+					<section>
+						<h3>Ativando o Ambiente Virtual</h3>
+						<h4>Linux ou macOS</h4>
+						<pre><code class="language-bash">
+$ source venv/bin/activate
+						</code></pre>
+						<h4>Microsoft Windows</h4>
+						<pre><code class="language-bash">
+$ venv\Scripts\activate
+						</code></pre>
+						<p><small>O prompt de comando é modificado para incluir o nome do ambiente.</small></p>
+					</section>
+
+					<section>
+						<h3>Instalando Pacotes Python com <code>pip</code></h3>
+						<ul>
+							<li><code>pip</code> é o gerenciador de pacotes incluído em todos os ambientes virtuais.</li>
+							<li>Sempre use <code>pip</code> no ambiente virtual ativado.</li>
+						</ul>
+						<pre><code class="language-bash">
+(venv) $ pip install flask
+						</code></pre>
+						<p><small>Isso instala Flask e suas dependências (Werkzeug, Jinja2, Click).</small></p>
+					</section>
+
+					<section>
+						<h3>Verificando a Instalação</h3>
+						<pre><code class="language-bash">
+(venv) $ pip freeze
+(venv) $ python
+>>> import flask
+>>>
+						</code></pre>
+						<p><small>Se nenhum erro aparecer, Flask foi instalado corretamente.</small></p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Capítulo 2: Estrutura Básica da Aplicação</h2>
+					</section>
+
+					<section>
+						<h3>Instanciação da Aplicação</h3>
+						<ul>
+							<li>Toda aplicação Flask cria uma instância da aplicação.</li>
+							<li>O servidor web passa todas as requisições a este objeto, usando o protocolo WSGI.</li>
+							<li>Objeto da classe <code>Flask</code>:</li>
+						</ul>
+						<pre><code class="language-python">
+from flask import Flask
+app = Flask(__name__)
+						</code></pre>
+						<p><small><code>__name__</code> ajuda Flask a localizar arquivos da aplicação como templates e imagens.</small></p>
+					</section>
+
+					<section>
+						<h3>Rotas e Funções de View</h3>
+						<ul>
+							<li>Flask mapeia URLs para funções Python.</li>
+							<li>Associação URL-função é chamada de <b>rota</b>.</li>
+							<li>Definidas com o decorador <code>app.route</code>.</li>
+						</ul>
+						<pre><code class="language-python">
+@app.route('/')
+def index():
+    return '<h1>Hello World!</h1>'
+						</code></pre>
+						<p><small>Funções como <code>index()</code> que tratam URLs da aplicação são chamadas de <b>funções de view</b>.</small></p>
+					</section>
+
+					<section>
+						<h3>Rotas Dinâmicas</h3>
+						<ul>
+							<li>Permitem componentes variáveis na URL.</li>
+							<li>Partes dinâmicas são passadas como argumentos para a função de view.</li>
+						</ul>
+						<pre><code class="language-python">
+@app.route('/user/<name>')
+def user(name):
+    return '<h1>Hello, {}!</h1>'.format(name)
+						</code></pre>
+						<p><small>Tipos suportados: <code>string</code> (padrão), <code>int</code>, <code>float</code>, <code>path</code>.</small></p>
+					</section>
+
+					<section>
+						<h3>Ciclo Requisição-Resposta</h3>
+						<ul>
+							<li><b>Contextos:</b> <code>Application Context</code> e <code>Request Context</code>.</li>
+							<li>Tornam objetos (como <code>request</code> e <code>session</code>) globalmente acessíveis de forma temporária e segura em ambientes multi-thread.</li>
+						</ul>
+						<pre><code class="language-python">
+from flask import request
+
+@app.route('/')
+def index():
+    user_agent = request.headers.get('User-Agent')
+    return '&lt;p&gt;Your browser is {}&lt;/p&gt;'.format(user_agent)
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Objetos Globais de Contexto (Tabela 2-1) </h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Variável</th>
+									<th>Contexto</th>
+									<th>Descrição</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><code>current_app</code></td>
+									<td>Application</td>
+									<td>A instância da aplicação ativa.</td>
+								</tr>
+								<tr>
+									<td><code>g</code></td>
+									<td>Application</td>
+									<td>Um objeto que a aplicação pode usar para armazenamento temporário durante o tratamento de uma requisição. É resetado a cada requisição.</td>
+								</tr>
+								<tr>
+									<td><code>request</code></td>
+									<td>Request</td>
+									<td>O objeto de requisição, que encapsula o conteúdo de uma requisição HTTP enviada pelo cliente.</td>
+								</tr>
+								<tr>
+									<td><code>session</code></td>
+									<td>Request</td>
+									<td>A sessão do usuário, um dicionário que a aplicação pode usar para armazenar valores que são "lembrados" entre requisições.</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+
+					<section>
+						<h3>Hooks de Requisição</h3>
+						<ul>
+							<li>Funções que são executadas antes ou depois do processamento de cada requisição.</li>
+							<li>Implementados como decoradores:
+								<ul>
+									<li><code>before_request</code>: Executado antes de cada requisição.</li>
+									<li><code>before_first_request</code>: Executado apenas antes da primeira requisição.</li>
+									<li><code>after_request</code>: Executado depois de cada requisição, se não houver exceções.</li>
+									<li><code>teardown_request</code>: Executado depois de cada requisição, mesmo com exceções.</li>
+								</ul>
+							</li>
+						</ul>
+						<p><small>Dados podem ser compartilhados usando <code>g</code>.</small></p>
+					</section>
+
+					<section>
+						<h3>Respostas</h3>
+						<ul>
+							<li>O valor de retorno de uma função de view é a resposta à requisição.</li>
+							<li>Inclui texto (HTML) e código de status HTTP (padrão 200 OK).</li>
+							<li>Pode retornar:
+								<ul>
+									<li>String (HTML)</li>
+									<li>String, Código de Status (ex: <code>return '<h1>Bad Request</h1>', 400</code>).</li>
+									<li>String, Código de Status, Dicionário de Headers.</li>
+									<li>Objeto de Resposta (usando <code>make_response()</code>).</li>
+								</ul>
+							</li>
+						</ul>
+						<pre><code class="language-python">
+from flask import make_response
+
+@app.route('/')
+def index():
+    response = make_response('&lt;h1&gt;This document carries a cookie!&lt;/h1&gt;')
+    response.set_cookie('answer', '42')
+    return response
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Redirecionamentos e Erros</h3>
+						<ul>
+							<li><b>Redirecionamento:</b> Não inclui documento, apenas uma nova URL para o navegador.</li>
+							<li>Comumente usa status 302 e header Location.</li>
+							<li>Função auxiliar <code>redirect()</code>.</li>
+							<li><b>Erros:</b> Função <code>abort()</code> levanta uma exceção para tratamento de erros (ex: 404 Not Found).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Servidor Web de Desenvolvimento</h3>
+						<ul>
+							<li>Iniciado com <code>flask run</code>.</li>
+							<li>Procura a instância da aplicação na variável de ambiente <code>FLASK_APP</code>.</li>
+							<li>Exemplo: <code>export FLASK_APP=hello.py</code> (Linux/macOS) ou <code>set FLASK_APP=hello.py</code> (Windows).</li>
+							<li>Para desenvolvimento e testes (não para produção!).</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Modo Depuração (Debug Mode)</h3>
+						<ul>
+							<li>Habilita recarregador (<code>reloader</code>) e depurador (<code>debugger</code>).</li>
+							<li><code>reloader</code>: Reinicia o servidor automaticamente ao modificar arquivos.</li>
+							<li><code>debugger</code>: Ferramenta web que aparece no navegador em caso de exceção não tratada.</li>
+						</ul>
+						<pre><code class="language-bash">
+(venv) $ export FLASK_APP=hello.py
+(venv) $ export FLASK_DEBUG=1
+(venv) $ flask run
+						</code></pre>
+						<p><small><b>NUNCA</b> habilite o modo depuração em um servidor de produção!.</small></p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Capítulo 3: Templates</h2>
+					</section>
+
+					<section>
+						<h3>Separação de Lógica</h3>
+						<ul>
+							<li><b>Lógica de Negócio:</b> Altera o estado da aplicação (ex: adicionar usuário ao BD).</li>
+							<li><b>Lógica de Apresentação:</b> Gera a resposta (HTML).</li>
+							<li>Misturar as duas torna o código difícil de manter.</li>
+							<li><b>Templates:</b> Arquivos de texto com variáveis placeholder para partes dinâmicas.</li>
+							<li><b>Renderização:</b> Processo de substituir variáveis por valores reais.</li>
+							<li>Flask usa o motor de templates <b>Jinja2</b>.</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Sintaxe Jinja2</h3>
+						<ul>
+							<li>Variáveis: <code>{{ nome_da_variavel }}</code>.</li>
+							<li>Estruturas de controle (condicionais, loops): <code>{% if ... %} {% for ... %}</code>.</li>
+							<li>Macros: Funções reutilizáveis (<code>{% macro ... %}</code>).</li>
+							<li>Inclusão de arquivos: <code>{% include 'arquivo.html' %}</code>.</li>
+							<li>Herança de templates:
+								<ul>
+									<li>Base template (<code>base.html</code>) define blocos: <code>{% block nome_do_bloco %}{% endblock %}</code>.</li>
+									<li>Templates derivados estendem o base e preenchem/sobrescrevem blocos: <code>{% extends "base.html" %}</code>.</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Renderizando Templates no Flask</h3>
+						<ul>
+							<li>Flask procura templates no subdiretório <code>templates</code>.</li>
+							<li>Função <code>render_template()</code> integra Jinja2 com a aplicação.</li>
+							<li>Recebe nome do template e argumentos chave-valor para variáveis.</li>
+						</ul>
+						<pre><code class="language-python">
+from flask import Flask, render_template
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/user/<name>')
+def user(name):
+    return render_template('user.html', name=name)
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Filtros de Variáveis Jinja2 (Tabela 3-1) </h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Filtro</th>
+									<th>Descrição</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><code>safe</code></td>
+									<td>Renderiza o valor sem aplicar escape HTML. **Cuidado com conteúdo não confiável!** </td>
+								</tr>
+								<tr>
+									<td><code>capitalize</code></td>
+									<td>Converte o primeiro caractere para maiúsculo, o resto para minúsculo.</td>
+								</tr>
+								<tr>
+									<td><code>lower</code></td>
+									<td>Converte para minúsculas.</td>
+								</tr>
+								<tr>
+									<td><code>upper</code></td>
+									<td>Converte para maiúsculas.</td>
+								</tr>
+								<tr>
+									<td><code>title</code></td>
+									<td>Capitaliza cada palavra.</td>
+								</tr>
+								<tr>
+									<td><code>trim</code></td>
+									<td>Remove espaços em branco iniciais e finais.</td>
+								</tr>
+								<tr>
+									<td><code>striptags</code></td>
+									<td>Remove tags HTML.</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+
+					<section>
+						<h3>Integração com Bootstrap (Flask-Bootstrap)</h3>
+						<ul>
+							<li>Bootstrap: Framework CSS/JS para UI responsiva e atraente.</li>
+							<li>Flask-Bootstrap: Extensão Flask para facilitar a integração.</li>
+						</ul>
+						<pre><code class="language-bash">
+# Instalação
+(venv) $ pip install flask-bootstrap
+						</code></pre>
+						<pre><code class="language-python">
+# Inicialização
+from flask_bootstrap import Bootstrap
+bootstrap = Bootstrap(app)
+						</code></pre>
+						<p><small>Fornece um template base (<code>bootstrap/base.html</code>) para herdar.</small></p>
+					</section>
+
+					<section>
+						<h3>Templates de Erro Personalizados</h3>
+						<ul>
+							<li>Flask permite definir páginas de erro personalizadas.</li>
+							<li>Decorador <code>app.errorhandler()</code>.</li>
+							<li>Retornam o template e o código de status.</li>
+						</ul>
+						<pre><code class="language-python">
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Links e Arquivos Estáticos</h3>
+						<ul>
+							<li><code>url_for()</code>: Função auxiliar para gerar URLs.
+								<ul>
+									<li>Evita dependência explícita nas rotas e facilita refatoração.</li>
+									<li>Usa o nome da função de view como argumento.</li>
+									<li><code>_external=True</code> para URLs absolutas (útil em e-mails).</li>
+									<li>Argumentos adicionais viram query strings.</li>
+								</ul>
+							</li>
+							<li>Arquivos Estáticos (CSS, JS, Imagens):
+								<ul>
+									<li>Flask suporta automaticamente <code>/static/<filename></code>.</li>
+									<li>Procura arquivos no subdiretório <code>static</code> da pasta raiz da aplicação.</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Localização de Datas e Horas (Flask-Moment)</h3>
+						<ul>
+							<li>Datas/horas são complicadas devido a fusos e locais.</li>
+							<li>Solução: Enviar horários UTC para o navegador e usar JavaScript para formatar.</li>
+							<li><b>Moment.js:</b> Biblioteca JavaScript para renderizar datas/horas.</li>
+							<li><b>Flask-Moment:</b> Extensão para integrar Moment.js com Jinja2.</li>
+						</ul>
+						<pre><code class="language-bash">
+# Instalação
+(venv) $ pip install flask-moment
+						</code></pre>
+						<pre><code class="language-python">
+# Inicialização
+from flask_moment import Moment
+moment = Moment(app)
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Usando Flask-Moment em Templates</h3>
+						<ul>
+							<li>Inclua a biblioteca: <code>{{ moment.include_moment() }}</code>.</li>
+							<li>Objeto <code>moment</code> disponível no template.</li>
+						</ul>
+						<pre><code class="language-html">
+&lt;p&gt;The local date and time is {{ moment(current_time).format('LLL') }}.&lt;/p&gt;
+&lt;p&gt;That was {{ moment(current_time).fromNow(refresh=True) }}&lt;/p&gt;
+						</code></pre>
+						<p><small><code>format('LLL')</code>: Formato localizado. <code>fromNow()</code>: Timestamp relativo que se atualiza.</small></p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Capítulo 4: Web Forms</h2>
+					</section>
+
+					<section>
+						<h3>Introdução a Web Forms</h3>
+						<ul>
+							<li>Permitem que usuários forneçam dados ao servidor.</li>
+							<li>Dados enviados via requisição POST (geralmente).</li>
+							<li>Objeto <code>request.form</code> expõe os dados do formulário.</li>
+							<li><b>Flask-WTF:</b> Extensão que simplifica o trabalho com formulários.</li>
+							<li>Envolve o pacote <b>WTForms</b>.</li>
+						</ul>
+						<pre><code class="language-bash">
+# Instalação
+(venv) $ pip install flask-wtf
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Configuração do Flask-WTF</h3>
+						<ul>
+							<li>Requer uma "chave secreta" (<code>SECRET_KEY</code>).</li>
+							<li>Usada para assinar criptograficamente o conteúdo da sessão do usuário.</li>
+							<li>Protege contra ataques de Cross-Site Request Forgery (CSRF).</li>
+						</ul>
+						<pre><code class="language-python">
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'hard to guess string'
+						</code></pre>
+						<p><small><b>Cuidado:</b> Não inclua credenciais diretamente no código-fonte, use variáveis de ambiente.</small></p>
+					</section>
+
+					<section>
+						<h3>Classes de Formulário</h3>
+						<ul>
+							<li>Cada formulário é uma classe que herda de <code>FlaskForm</code>.</li>
+							<li>Campos são definidos como variáveis de classe.</li>
+							<li>Validadores: Funções que verificam a validade dos dados.</li>
+						</ul>
+						<pre><code class="language-python">
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
+class NameForm(FlaskForm):
+    name = StringField('What is your name?', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+						</code></pre>
+						<p><small><code>DataRequired()</code>: Garante que o campo não seja enviado vazio.</small></p>
+					</section>
+
+					<section>
+						<h3>Renderização HTML de Formulários</h3>
+						<ul>
+							<li>Campos do formulário são "callables" que, quando invocados no template, renderizam HTML.</li>
+							<li><code>form.hidden_tag()</code>: Campo oculto para proteção CSRF.</li>
+						</ul>
+						<pre><code class="language-html">
+&lt;form method="POST"&gt;
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}
+    {{ form.submit() }}
+&lt;/form&gt;
+						</code></pre>
+						<p><small><b>Flask-Bootstrap</b> oferece <code>wtf.quick_form(form)</code> para renderizar o formulário com estilos Bootstrap.</small></p>
+					</section>
+
+					<section>
+						<h3>Tratamento de Formulários em Funções de View</h3>
+						<ul>
+							<li>Uma função de view pode lidar com requisições GET (exibir formulário) e POST (processar dados).</li>
+							<li>Use <code>methods=['GET', 'POST']</code> no decorador <code>@app.route</code>.</li>
+						</ul>
+						<pre><code class="language-python">
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    name = None
+    form = NameForm()
+    if form.validate_on_submit(): # Verifica submissão e validadores 
+        name = form.name.data
+        form.name.data = '' # Limpa o campo 
+    return render_template('index.html', form=form, name=name)
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Redirecionamentos e Sessões de Usuário</h3>
+						<ul>
+							<li><b>Padrão Post/Redirect/Get:</b> Responde a requisições POST com um redirecionamento.
+								<ul>
+									<li>Evita envio duplicado do formulário ao atualizar a página.</li>
+									<li>Usa <code>redirect(url_for('endpoint'))</code>.</li>
+								</ul>
+							</li>
+							<li><b>Sessão de Usuário:</b> Armazenamento privado para cada cliente conectado.
+								<ul>
+									<li>Acessível via <code>session</code> (como um dicionário Python).</li>
+									<li>Usado para "lembrar" dados entre requisições (ex: o nome do usuário).</li>
+									<li>Armazenado em cookies criptografados.</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+
+					<section>
+						<h3>Exemplo de Padrão Post/Redirect/Get e Sessão</h3>
+						<pre><code class="language-python">
+from flask import render_template, session, redirect, url_for
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = NameForm()
+    if form.validate_on_submit():
+        session['name'] = form.name.data
+        return redirect(url_for('index')) # Redireciona 
+    # Pega o nome da sessão, se existir 
+    return render_template('index.html', form=form, name=session.get('name'))
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Mensagens Flash (Message Flashing)</h3>
+						<ul>
+							<li>Fornece feedback ao usuário após a conclusão de uma requisição (confirmação, aviso, erro).</li>
+							<li>Função <code>flash('Sua mensagem aqui')</code>.</li>
+							<li>Mensagens são armazenadas na sessão e exibidas apenas uma vez.</li>
+						</ul>
+						<pre><code class="language-python">
+from flask import flash
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    # ...
+    if form.validate_on_submit():
+        old_name = session.get('name')
+        if old_name is not None and old_name != form.name.data:
+            flash('Looks like you have changed your name!') # Mensagem flash 
+        session['name'] = form.name.data
+        # ...
+						</code></pre>
+					</section>
+
+					<section>
+						<h3>Exibindo Mensagens Flash no Template</h3>
+						<ul>
+							<li>Usar <code>get_flashed_messages()</code> no template (geralmente no base template).</li>
+						</ul>
+						<pre><code class="language-html">
+{% block content %}
+&lt;div class="container"&gt;
+    {% for message in get_flashed_messages() %}
+    &lt;div class="alert alert-warning"&gt;
+        &lt;button type="button" class="close" data-dismiss="alert"&gt;&amp;times;&lt;/button&gt;
+        {{ message }}
+    &lt;/div&gt;
+    {% endfor %}
+    {% block page_content %}{% endblock %}
+&lt;/div&gt;
+{% endblock %}
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h2>Próximos Passos</h2>
+					<p>Nos próximos capítulos, exploraremos aprofundadamente:</p>
+					<ul>
+						<li>Bancos de Dados com Flask-SQLAlchemy (Capítulo 5) </li>
+						<li>Envio de E-mails com Flask-Mail (Capítulo 6) </li>
+						<li>Estrutura de Aplicações Maiores (Capítulo 7) </li>
+						<li>Autenticação de Usuários (Capítulo 8) </li>
+					</ul>
+					<h3>Obrigado!</h3>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealHighlight, RevealMarkdown, RevealNotes ]
+			});
+		</script>
+	</body></html>
