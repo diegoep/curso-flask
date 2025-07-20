@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Formulário Simples</h1>
+    <form method="POST" action="{{ url_for('index') }}">
+        <div class="mb-3">
+            <label for="name" class="form-label">Qual seu nome?</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+    {% if name %}
+        <div class="alert alert-success mt-4">Olá, {{ name }}!</div>
+    {% endif %}
+{% endblock %}

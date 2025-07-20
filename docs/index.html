@@ -513,169 +513,108 @@ moment = Moment(app)
 
 				<section>
 					<section>
-						<h2>Capítulo 4: Web Forms</h2>
+						<h2>Capítulo 4: Processando Dados de Formulário HTML Tradicional no Flask</h2>
 					</section>
+<section>
+<h3>Criando o Formulário HTML</h3>
+Você pode criar um formulário HTML puro, estilizado com Bootstrap (ou outro framework CSS), normalmente em seu template Jinja2:
+<pre><code class="language-html">
+<form method="POST" action="{{ url_for('index') }}">
+  <div class="mb-3">
+    <label for="name" class="form-label">Qual seu nome?</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+</code></pre>
+<ul>
+	<li>O atributo <code>method="POST"</code> indica que os dados serão enviados via POST.</li>
+	<li>O atributo <code>name="name"</code> no input é importante: é assim que o Flask irá identificar o campo.</li>
+</ul>
+</section>
+<section>
+<h3>Rota Flask para Processar o Formulário</h3>
+<pre><code class="language-python">
+from flask import Flask, render_template, request
 
-					<section>
-						<h3>Introdução a Web Forms</h3>
-						<ul>
-							<li>Permitem que usuários forneçam dados ao servidor.</li>
-							<li>Dados enviados via requisição POST (geralmente).</li>
-							<li>Objeto <code>request.form</code> expõe os dados do formulário.</li>
-							<li><b>Flask-WTF:</b> Extensão que simplifica o trabalho com formulários.</li>
-							<li>Envolve o pacote <b>WTForms</b>.</li>
-						</ul>
-						<pre><code class="language-bash">
-# Instalação
-(venv) $ pip install flask-wtf
-						</code></pre>
-					</section>
-
-					<section>
-						<h3>Configuração do Flask-WTF</h3>
-						<ul>
-							<li>Requer uma "chave secreta" (<code>SECRET_KEY</code>).</li>
-							<li>Usada para assinar criptograficamente o conteúdo da sessão do usuário.</li>
-							<li>Protege contra ataques de Cross-Site Request Forgery (CSRF).</li>
-						</ul>
-						<pre><code class="language-python">
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-						</code></pre>
-						<p><small><b>Cuidado:</b> Não inclua credenciais diretamente no código-fonte, use variáveis de ambiente.</small></p>
-					</section>
 
-					<section>
-						<h3>Classes de Formulário</h3>
-						<ul>
-							<li>Cada formulário é uma classe que herda de <code>FlaskForm</code>.</li>
-							<li>Campos são definidos como variáveis de classe.</li>
-							<li>Validadores: Funções que verificam a validade dos dados.</li>
-						</ul>
-						<pre><code class="language-python">
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
-
-class NameForm(FlaskForm):
-    name = StringField('What is your name?', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-						</code></pre>
-						<p><small><code>DataRequired()</code>: Garante que o campo não seja enviado vazio.</small></p>
-					</section>
-
-					<section>
-						<h3>Renderização HTML de Formulários</h3>
-						<ul>
-							<li>Campos do formulário são "callables" que, quando invocados no template, renderizam HTML.</li>
-							<li><code>form.hidden_tag()</code>: Campo oculto para proteção CSRF.</li>
-						</ul>
-						<pre><code class="language-html">
-&lt;form method="POST"&gt;
-    {{ form.hidden_tag() }}
-    {{ form.name.label }} {{ form.name() }}
-    {{ form.submit() }}
-&lt;/form&gt;
-						</code></pre>
-						<p><small><b>Flask-Bootstrap</b> oferece <code>wtf.quick_form(form)</code> para renderizar o formulário com estilos Bootstrap.</small></p>
-					</section>
-
-					<section>
-						<h3>Tratamento de Formulários em Funções de View</h3>
-						<ul>
-							<li>Uma função de view pode lidar com requisições GET (exibir formulário) e POST (processar dados).</li>
-							<li>Use <code>methods=['GET', 'POST']</code> no decorador <code>@app.route</code>.</li>
-						</ul>
-						<pre><code class="language-python">
 @app.route('/', methods=['GET', 'POST'])
 def index():
     name = None
-    form = NameForm()
-    if form.validate_on_submit(): # Verifica submissão e validadores 
-        name = form.name.data
-        form.name.data = '' # Limpa o campo 
-    return render_template('index.html', form=form, name=name)
-						</code></pre>
-					</section>
+    if request.method == 'POST':
+        # Recupera o valor enviado pelo formulário
+        name = request.form.get('name')
+    return render_template('index.html', name=name)
+</code></pre>
+<ul>
+	<li><code>request.form</code> é um dicionário especial do Flask que contém os dados enviados via POST.</li>
+	<li>Use <code>request.form.get('nome_do_campo')</code> para acessar o valor de um campo do formulário.</li>
+</ul>
+</section>
+<section>
+	<h3>Exibindo o Resultado no Template</h3>
+	<p>No seu template, você pode exibir o valor recebido:</p>
+	<pre><code class="language-html">
+	{% if name %}
+	<div class="alert alert-success mt-4">Olá, {{ name }}!</div>
+	{% endif %}
+	</code></pre>
+</section>
+<section>
+	<h3>Exemplo Completo</h3>
+	<h4>app.py:</h4>
+	<pre><code class="language-python">
+	from flask import Flask, render_template, request
 
-					<section>
-						<h3>Redirecionamentos e Sessões de Usuário</h3>
-						<ul>
-							<li><b>Padrão Post/Redirect/Get:</b> Responde a requisições POST com um redirecionamento.
-								<ul>
-									<li>Evita envio duplicado do formulário ao atualizar a página.</li>
-									<li>Usa <code>redirect(url_for('endpoint'))</code>.</li>
-								</ul>
-							</li>
-							<li><b>Sessão de Usuário:</b> Armazenamento privado para cada cliente conectado.
-								<ul>
-									<li>Acessível via <code>session</code> (como um dicionário Python).</li>
-									<li>Usado para "lembrar" dados entre requisições (ex: o nome do usuário).</li>
-									<li>Armazenado em cookies criptografados.</li>
-								</ul>
-							</li>
-						</ul>
-					</section>
+	app = Flask(__name__)
 
-					<section>
-						<h3>Exemplo de Padrão Post/Redirect/Get e Sessão</h3>
-						<pre><code class="language-python">
-from flask import render_template, session, redirect, url_for
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    form = NameForm()
-    if form.validate_on_submit():
-        session['name'] = form.name.data
-        return redirect(url_for('index')) # Redireciona 
-    # Pega o nome da sessão, se existir 
-    return render_template('index.html', form=form, name=session.get('name'))
-						</code></pre>
-					</section>
-
-					<section>
-						<h3>Mensagens Flash (Message Flashing)</h3>
-						<ul>
-							<li>Fornece feedback ao usuário após a conclusão de uma requisição (confirmação, aviso, erro).</li>
-							<li>Função <code>flash('Sua mensagem aqui')</code>.</li>
-							<li>Mensagens são armazenadas na sessão e exibidas apenas uma vez.</li>
-						</ul>
-						<pre><code class="language-python">
-from flask import flash
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    # ...
-    if form.validate_on_submit():
-        old_name = session.get('name')
-        if old_name is not None and old_name != form.name.data:
-            flash('Looks like you have changed your name!') # Mensagem flash 
-        session['name'] = form.name.data
-        # ...
-						</code></pre>
-					</section>
-
-					<section>
-						<h3>Exibindo Mensagens Flash no Template</h3>
-						<ul>
-							<li>Usar <code>get_flashed_messages()</code> no template (geralmente no base template).</li>
-						</ul>
-						<pre><code class="language-html">
-{% block content %}
-&lt;div class="container"&gt;
-    {% for message in get_flashed_messages() %}
-    &lt;div class="alert alert-warning"&gt;
-        &lt;button type="button" class="close" data-dismiss="alert"&gt;&amp;times;&lt;/button&gt;
-        {{ message }}
-    &lt;/div&gt;
-    {% endfor %}
-    {% block page_content %}{% endblock %}
-&lt;/div&gt;
-{% endblock %}
-						</code></pre>
-					</section>
-				</section>
-
+	@app.route('/', methods=['GET', 'POST'])
+	def index():
+		name = None
+		if request.method == 'POST':
+			name = request.form.get('name')
+		return render_template('index.html', name=name)
+	</code></pre></section>
+	
+	<section>
+	<h3>Exemplo Completo</h3>
+	<h4>templates/index.html:</h4>
+	<pre><code class="language-html">
+	<!doctype html>
+	<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<title>Formulário Simples Flask</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container mt-5">
+		<h1>Formulário Simples</h1>
+		<form method="POST" action="{{ url_for('index') }}">
+			<div class="mb-3">
+			<label for="name" class="form-label">Qual seu nome?</label>
+			<input type="text" class="form-control" id="name" name="name" required>
+			</div>
+			<button type="submit" class="btn btn-primary">Enviar</button>
+		</form>
+		{% if name %}
+			<div class="alert alert-success mt-4">Olá, {{ name }}!</div>
+		{% endif %}
+		</div>
+	</body>
+	</html> 
+	</code></pre>
+</section>
+<section>
+	<h3>Resumo</h3>
+	<ul>
+		<li>Crie um formulário HTML normal no template.</li>
+		<li>Use request.form para acessar os dados enviados via POST.</li>
+		<li>Exiba o resultado no template conforme necessário.</li>
+	</ul>
+</section>
+</section>
 				<section>
 					<h2>Próximos Passos</h2>
 					<p>Nos próximos capítulos, exploraremos aprofundadamente:</p>
