@@ -615,17 +615,130 @@ def index():
 	</ul>
 </section>
 </section>
-				<section>
-					<h2>Próximos Passos</h2>
-					<p>Nos próximos capítulos, exploraremos aprofundadamente:</p>
-					<ul>
-						<li>Bancos de Dados com Flask-SQLAlchemy (Capítulo 5) </li>
-						<li>Envio de E-mails com Flask-Mail (Capítulo 6) </li>
-						<li>Estrutura de Aplicações Maiores (Capítulo 7) </li>
-						<li>Autenticação de Usuários (Capítulo 8) </li>
-					</ul>
-					<h3>Obrigado!</h3>
-				</section>
+<section>
+	<section>
+	<h2>Capítulo 5: Estrutura de uma aplicação real</h2>
+	</section>
+	 <section>
+        <h2>Por que reorganizar?</h2>
+        <ul>
+          <li>Arquivos únicos não escalam bem</li>
+          <li>Dificuldade de manutenção com o crescimento</li>
+          <li>Separar responsabilidades e facilitar testes</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Estrutura sugerida</h2>
+        <pre><code>minha_aplicacao/
+├── app/
+│   ├── main/
+│   │   ├── __init__.py
+│   │   ├── views.py
+│   │   ├── errors.py
+│   │   └── forms.py
+│   ├── templates/
+│   ├── static/
+│   ├── models.py
+│   ├── email.py
+│   └── __init__.py
+├── tests/
+├── migrations/
+├── app.py
+├── config.py
+└── requirements.txt</code></pre>
+      </section>
+
+      <section>
+        <h2>Configuração Modular</h2>
+        <ul>
+          <li>Arquivo <code>config.py</code> com múltiplas classes:</li>
+          <ul>
+            <li>DevelopmentConfig</li>
+            <li>TestingConfig</li>
+            <li>ProductionConfig</li>
+          </ul>
+          <li>Uso de variáveis de ambiente</li>
+          <li>Método <code>init_app()</code> para configurações extras</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Fábrica de Aplicações</h2>
+        <ul>
+          <li>Função <code>create_app(config_name)</code></li>
+          <li>Permite múltiplas instâncias da aplicação</li>
+          <li>Ideal para testes e configuração dinâmica</li>
+          <li>Extensões inicializadas com <code>init_app()</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Blueprints</h2>
+        <ul>
+          <li>Permitem dividir funcionalidades em módulos</li>
+          <li>Rotas e handlers ficam desacoplados da instância principal</li>
+          <li>Registrados via <code>app.register_blueprint()</code></li>
+          <li>Permite reuso e organização limpa</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Exemplo de Blueprint</h2>
+        <pre><code># app/main/__init__.py
+main = Blueprint('main', __name__)
+from . import views, errors
+
+# app/__init__.py
+app.register_blueprint(main_blueprint)</code></pre>
+      </section>
+
+      <section>
+        <h2>Script Principal</h2>
+        <ul>
+          <li><code>app.py</code> cria a aplicação</li>
+          <li>Usa <code>os.getenv('FLASK_CONFIG')</code> para selecionar a config</li>
+        </ul>
+        <pre><code>app = create_app(...)</code></pre>
+      </section>
+
+      <section>
+        <h2>Arquivo requirements.txt</h2>
+        <ul>
+          <li>Gerado com <code>pip freeze &gt; requirements.txt</code></li>
+          <li>Reproduz ambientes em outras máquinas</li>
+          <li>Deve ser atualizado a cada nova dependência</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Execução da Aplicação</h2>
+        <ul>
+          <li>Definir <code>FLASK_APP=flasky.py</code></li>
+          <li>Ativar modo debug com <code>FLASK_DEBUG=1</code></li>
+          <li>Executar com <code>flask run</code></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Resumo</h2>
+        <ul>
+          <li>Organização modular facilita manutenção</li>
+          <li>Uso de blueprints torna o projeto escalável</li>
+          <li>Factory + config por ambiente = flexibilidade</li>
+          <li>Base para projetos Flask profissionais</li>
+        </ul>
+      </section>
+</section>
+<section>
+	<h2>Próximos Passos</h2>
+	<ul>
+		<li>Bancos de Dados com Flask-SQLAlchemy</li>
+		<li>Envio de E-mails com Flask-Mail</li>
+		<li>Autenticação de usuários</li>
+	</ul>
+	<h3>Obrigado!</h3>
+</section>
 
 			</div>
 		</div>
