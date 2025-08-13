@@ -5,9 +5,9 @@ app = Flask(__name__)
 app.secret_key = 'asd0uas03430d0i3aidu30du0a33434'
 
 app.config['PRODUTOS'] = {
-    1: {'id': 1, 'nome': 'Produto 1', 'preco': 10.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
-    2: {'id': 2, 'nome': 'Produto 2', 'preco': 20.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
-    3: {'id': 3, 'nome': 'Produto 3', 'preco': 30.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
+    100: {'id': 100, 'nome': 'Produto 1', 'preco': 10.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
+    200: {'id': 200, 'nome': 'Produto 2', 'preco': 20.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
+    300: {'id': 300, 'nome': 'Produto 3', 'preco': 30.00, 'imagem_url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Product_sample_icon_picture.png/640px-Product_sample_icon_picture.png'},
 }
 
 @app.route('/')

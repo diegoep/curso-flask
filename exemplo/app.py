@@ -7,6 +7,7 @@ app.secret_key = 'uma string secreta'  # Necessário para flash e sessão
 def index():
     name = session.get('name')
     if request.method == 'POST':
+        ## Entra se enviado via formulário
         new_name = request.form.get('name')
         if new_name:
             if name and name != new_name:
@@ -15,6 +16,7 @@ def index():
             return redirect(url_for('index'))
         else:
             flash('Por favor, preencha o nome.')
+    ## Entra se acessado via navegador (GET)
     return render_template('index.html', name=session.get('name'))
 
 if __name__ == '__main__':

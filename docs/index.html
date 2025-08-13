@@ -731,6 +731,137 @@ app.register_blueprint(main_blueprint)</code></pre>
       </section>
 </section>
 <section>
+	<section>
+		<h2>Capitulo 6: Persistência de Dados com Arquivos CSV</h2>
+	</section>
+	<section>
+		<h3>Por que usar arquivos?</h3>
+		<ul>
+			<li>Persistem dados entre execuções da aplicação</li>
+			<li>Simples para pequenos projetos ou protótipos</li>
+			<li>Evita dependência de banco de dados</li>
+		</ul>
+	</section>
+	<section>
+		<h3>Modelo de Produto</h3>
+		<ul>
+			<li><b>nome</b>: Nome do produto</li>
+			<li><b>descrição</b>: Descrição breve</li>
+			<li><b>foto</b>: URL da imagem</li>
+			<li><b>preço</b>: Valor em reais</li>
+		</ul>
+	</section>
+	<section>
+		<h3>Formato do Arquivo CSV</h3>
+		<ul>
+			<li>Usando <b>CSV</b> para armazenar uma lista de produtos</li>
+		</ul>
+		<pre><code class="language-csv">
+nome,descricao,foto,preco
+Camiseta Flask,Camiseta oficial do Flask,https://exemplo.com/camiseta.jpg,59.90
+Caneca Python,Caneca personalizada Python,https://exemplo.com/caneca.jpg,34.50
+		</code></pre>
+	</section>
+	<section>
+		<h3>Lendo o Catálogo de Produtos</h3>
+		<pre><code class="language-python">
+import csv
+
+def carregar_produtos():
+	produtos = []
+	with open('produtos.csv', newline='', encoding='utf-8') as f:
+		linhas = f.readlines()
+		for linha in linhas[1:]:  # pula o cabeçalho
+			nome, descricao, foto, preco = linha.strip().split(',')
+			produtos.append({
+				'nome': nome,
+				'descricao': descricao,
+				'foto': foto,
+				'preco': float(preco)
+			})
+	return produtos
+
+@app.route('/catalogo')
+def catalogo():
+	produtos = carregar_produtos()
+	return render_template('catalogo.html', produtos=produtos)
+		</code></pre>
+	</section>
+	<section>
+		<h3>Adicionando um Produto</h3>
+		<pre><code class="language-python">
+def salvar_produto(novo):
+	with open('produtos.csv', 'a', newline='', encoding='utf-8') as f:
+		linha = f"{novo['nome']},{novo['descricao']},{novo['foto']},{novo['preco']}\n"
+		f.write(linha)
+
+@app.route('/adicionar', methods=['POST'])
+def adicionar():
+	novo = {
+		"nome": request.form['nome'],
+		"descricao": request.form['descricao'],
+		"foto": request.form['foto'],
+		"preco": float(request.form['preco'])
+	}
+	salvar_produto(novo)
+	return redirect(url_for('catalogo'))
+		</code></pre>
+	</section>
+	<section>
+		<h3>Exibindo o Catálogo no Template</h3>
+		<pre><code class="language-html">
+<ul>
+  {% for produto in produtos %}
+	<li>
+	  <img src="{{ produto.foto }}" alt="{{ produto.nome }}" style="height:80px;">
+	  <strong>{{ produto.nome }}</strong> - R$ {{ produto.preco }}<br>
+	  <small>{{ produto.descricao }}</small>
+	</li>
+  {% endfor %}
+</ul>
+		</code></pre>
+	</section>
+	<section>
+		<h3>Lendo e Escrevendo CSV com Pandas</h3>
+		<ul>
+			<li><b>Pandas</b> é uma biblioteca poderosa para manipulação de dados em Python.</li>
+			<li>Permite ler, filtrar, modificar e salvar arquivos CSV facilmente.</li>
+		</ul>
+		<pre><code class="language-python">
+	import pandas as pd
+
+	# Lendo o arquivo CSV
+	df = pd.read_csv('produtos.csv')
+
+	# Exibindo todos os produtos
+	print(df)
+
+	# Adicionando um novo produto
+	novo_produto = {
+		'nome': 'Adesivo Flask',
+		'descricao': 'Adesivo para notebook',
+		'foto': 'https://exemplo.com/adesivo.jpg',
+		'preco': 9.90
+	}
+	df = pd.concat([df, pd.DataFrame([novo_produto])], ignore_index=True)
+
+	# Salvando de volta no CSV
+	df.to_csv('produtos.csv', index=False)
+		</code></pre>
+		<ul>
+			<li>Com Pandas, você pode realizar buscas, ordenações e análises com poucas linhas de código.</li>
+		</ul>
+	</section>
+	<section>
+		<h3>Resumo</h3>
+		<ul>
+			<li>Use arquivos CSV para persistir dados simples</li>
+			<li>Leitura e escrita com <code>f.readlines</code> e <code>f.write</code></li>
+			<li>Leitura e escrita usando o <code>pandas</code></li>
+		</ul>
+	</section>
+</section>
+<section>
 	<h2>Próximos Passos</h2>
 	<ul>
 		<li>Bancos de Dados com Flask-SQLAlchemy</li>
